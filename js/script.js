@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     // Timer
 
     // const deadLine = '2022-09-16';
-    const deadLine = new Date('2022-07-18');
+    const deadLine = new Date('2022-08-31');
 
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds;
@@ -120,16 +120,32 @@ window.addEventListener('DOMContentLoaded', (e) => {
         closeModalBtn = document.querySelector('[data-close]'),
         modal = document.querySelector('.modal');
 
+    function madalOpen() {
+        modal.classList.add('show');
+        // modal.classList.remove('hiden');
+        document.body.style.overflow = 'hidden';
+        clearInterval(timerOpenId);
+    }
+
     openModalBtn.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hiden');
-            document.body.style.overflow = 'hidden';
-        });
+        btn.addEventListener('click', madalOpen);
     });
 
+    const timerOpenId = setTimeout(madalOpen, 6000);
+
+    function openModalScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >=
+            (document.documentElement.scrollHeight - 1)) {
+            madalOpen();
+            window.removeEventListener('scroll', openModalScroll);
+        };
+
+    }
+    window.addEventListener('scroll', openModalScroll);
+
+
     function modalClose() {
-        modal.classList.add('hiden');
+        // modal.classList.add('hiden');
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }

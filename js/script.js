@@ -164,8 +164,72 @@ window.addEventListener('DOMContentLoaded', (e) => {
         }
     });
 
+    // ********************************  class Menu для карточек
 
 
+    const imgMenu = [
+        'img/tabs/vegy.jpg',
+        'img/tabs/elite.jpg',
+        'img/tabs/post.jpg'
+    ];
+
+    const textMenu = [
+        "это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальнойценой и высоким качеством!",
+        "мы используем не только красивый дизайн упаковки, но  и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
+        "это тщательный подбор ингредиентов: полное отсутствие  продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное   количество белков за счет тофу и импортных вегетарианских стейков."
+    ]
+
+
+    class MenuCard {
+        constructor(src, title, text, price, parentElement) {
+
+            this.src = src;
+            this.title = title;
+            this.text = text;
+            this.price = price;
+            this.parent = document.querySelector(parentElement);
+            this.transfer = 27;
+            this.changeToUAH();
+        }
+        showTipeMenu() {
+            return `Меню "${this.title}"`
+        }
+        changeToUAH() {
+            return this.price *= this.transfer;
+        }
+        renderMenu() {
+            const element = document.createElement('div');
+            element.innerHTML +=
+                `<div class="menu__item">
+                 <img src = ${this.src} alt="post">
+            <h3 class="menu__item-subtitle">${this.showTipeMenu()}</h3>
+            <div class="menu__item-descr">Меню "${this.title}" ${this.text} </div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>   
+            </div>`;
+
+            this.parent.append(element);
+        }
+
+    }
+
+    // const fitness = new MenuCard(imgMenu[0], 'Фитнесс', textMenu[0], 229, ".menu__field .container");
+    new MenuCard(imgMenu[0],
+        'Фитнесс',
+        textMenu[0],
+        9,
+        ".menu__field .container"
+    ).renderMenu();
+
+    const premium = new MenuCard(imgMenu[1], 'Премиум', textMenu[1], 14, ".menu__field .container");
+    const postnoye = new MenuCard(imgMenu[2], 'Постное', textMenu[2], 21, ".menu__field .container");
+
+    // fitness.renderMenu();
+    premium.renderMenu();
+    postnoye.renderMenu();
 
 
 

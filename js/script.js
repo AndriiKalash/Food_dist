@@ -133,7 +133,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
         btn.addEventListener('click', madalOpen);
     });
 
-    const timerOpenId = setTimeout(madalOpen, 50000);
+    const timerOpenId = setTimeout(madalOpen, 30000);
 
     function openModalScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >=
@@ -269,16 +269,11 @@ window.addEventListener('DOMContentLoaded', (e) => {
             const statusMessage = document.createElement('img');
             statusMessage.src = message.loading;
             statusMessage.style.cssText = `
-                      display: block;
-                      margin: 0 auto;
-            `;
+                                         display: block;
+                                         margin: 0 auto;
+                                       `;
             form.insertAdjacentElement('afterend', statusMessage);
-            // form.append(statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Contant-type', 'application/json');
             const formData = new FormData(form);
 
             const object = {};
@@ -286,20 +281,25 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 object[key] = value;
             });
 
-            const json = JSON.stringify(object);
-            request.send(json);
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Contant-type': 'application/json'
+                },
+                body: JSON.stringify(object),
 
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    statusMessage.remove();
-
-                } else {
-                    showThanksModal(message.failure);
-                }
             })
+                .then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    statusMessage.remove();
+                }).catch(() => {
+                    showThanksModal(message.failure);
+                }).finally(() => {
+                    form.reset();
+                });
+
         })
     }
 

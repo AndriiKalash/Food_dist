@@ -169,6 +169,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
     // ********************************  class Menu для карточек
 
 
+
+
+
     const imgMenu = [
         'img/tabs/vegy.jpg',
         'img/tabs/elite.jpg',
@@ -183,9 +186,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
 
     class MenuCard {
-        constructor(src, title, text, price, parentElement, ...classes) {
-
+        constructor(src, altimg, title, text, price, parentElement, ...classes) {
             this.src = src;
+            this.altimg = altimg;
             this.title = title;
             this.text = text;
             this.price = price;
@@ -213,7 +216,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
             element.innerHTML +=
                 `
-                 <img src = ${this.src} alt="post">
+                 <img src = ${this.src} alt= ${this.altimg}>
                  <h3 class="menu__item-subtitle">${this.showTipeMenu()}</h3>
                  <div class="menu__item-descr">Меню "${this.title}" ${this.text} </div>
                  <div class="menu__item-divider"></div>
@@ -228,24 +231,78 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
     }
 
+    const getItems = async (url) => {  // получение данных:
+        const res = await fetch(url);
+        //проверка на ошибки запроса, так как промис fetch не выдает ошибки в catch, а только при отсутствии интернета
+        if (!res.ok) { //свойство промиса от fetch 
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+        return await res.json();
+    };
+
+    // getItems('http://localhost:3000/menu')
+    //     .then(data => { //рез. функции(наш массив из db.json)
+    //         data.forEach(({ img, altimg, title, descr, price }) => {
+    //             new MenuCard(img, altimg, title, descr, price, '.menu .container', "menu__item").renderMenu();
+    //         });
+    //     });
+
+    // способ рендера без шаблонизации в class 
+    getItems('http://localhost:3000/menu')
+        .then(data => cresteCardData(data));
+
+    function cresteCardData(data) {
+        data.forEach(({ img, altimg, title, descr, price }) => {
+            const card = document.createElement('div');
+            card.classList.add("menu__item");
+            card.innerHTML = `
+                       <img src = ${img} alt= ${altimg}>
+                       <h3 class="menu__item-subtitle">Меню</h3>
+                       <div class="menu__item-descr">Меню "${title}" ${descr} </div>
+                       <div class="menu__item-divider"></div>
+                   <div class="menu__item-price">
+                       <div class="menu__item-cost">Цена:</div>
+                       <div class="menu__item-total"><span>${price}</span> грн/день</div>
+                  </div>   
+             `;
+
+            document.querySelector('.menu .container').append(card);
+        });
+    }
+
+
+
     // const fitness = new MenuCard(imgMenu[0], 'Фитнесс', textMenu[0], 229, ".menu__field .container");
-    new MenuCard(
+    // new MenuCard(
+    //     imgMenu[0],
+    //     'Фитнесс',
+    //     textMenu[0],
+    //     9,
+    //     ".menu__field .container",
+    //     // "menu__item", "big"
+    // ).renderMenu();
 
-        imgMenu[0],
-        'Фитнесс',
-        textMenu[0],
-        9,
-        ".menu__field .container",
-        // "menu__item", "big"
+    // new MenuCard(
+    //     imgMenu[1],
+    //     'Премиум',
+    //     textMenu[1],
+    //     14,
+    //     ".menu__field .container",
+    //     "menu__item"
+    // ).renderMenu();
 
-    ).renderMenu();
-
-    const premium = new MenuCard(imgMenu[1], 'Премиум', textMenu[1], 14, ".menu__field .container", "menu__item");
-    const postnoye = new MenuCard(imgMenu[2], 'Постное', textMenu[2], 21, ".menu__field .container", "menu__item");
+    // new MenuCard(
+    //     imgMenu[2],
+    //     'Постное',
+    //     textMenu[2],
+    //     21,
+    //     ".menu__field .container",
+    //     "menu__item"
+    // ).renderMenu();
 
     // fitness.renderMenu();
-    premium.renderMenu();
-    postnoye.renderMenu();
+    // premium.renderMenu();
+    // postnoye.renderMenu();
 
 
     // ****************************** POST Form
@@ -259,10 +316,23 @@ window.addEventListener('DOMContentLoaded', (e) => {
     };
 
     forms.forEach(form => {
-        posData(form);
+        bindPosData(form);
     });
 
-    function posData(form) {
+
+    const postData = async (url, data) => {  // постинг данных:
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        });
+        return await res.json();
+    };
+
+
+    function bindPosData(form) {  // привязка постинга:
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -274,22 +344,25 @@ window.addEventListener('DOMContentLoaded', (e) => {
                                        `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const formData = new FormData(form);
 
-            const object = {};
-            formData.forEach(function (value, key) {
-                object[key] = value;
-            });
+            const formData = new FormData(form);  // принимает данные с формы
+            // const object = {};
+            // formData.forEach(function (value, key) { // из экземляра FormData перезаписываем в json
+            //     object[key] = value;
+            // });
+            // entries переделал formData в масив с масивами, а fromEntries создал обычный обьект и stringify перделал в json
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Contant-type': 'application/json'
-                },
-                body: JSON.stringify(object),
+            // fetch('server.php', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(object),
 
-            })
-                .then(data => data.text())
+            // })
+
+            postData('http://localhost:3000/requests', json) //JSON.stringify(object))  // передал запрос через ф-цыю postData:
                 .then(data => {
                     console.log(data);
                     showThanksModal(message.success);
@@ -330,7 +403,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
     }
 
 
-
+    fetch('http://localhost:3000/menu')
+        .then(data => data.json())
+        .then(res => console.log(res));
 
 
 

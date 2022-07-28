@@ -166,7 +166,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
         }
     });
 
-    // ********************************  class Menu для карточек
+    // ********************************  class Menu для карточек и получение их с бекЭнд
 
 
 
@@ -240,37 +240,49 @@ window.addEventListener('DOMContentLoaded', (e) => {
         return await res.json();
     };
 
-    // getItems('http://localhost:3000/menu')
+    // способ рендера через шаблон class:
+
+    // getItems('http://localhost:3000/menu') //
     //     .then(data => { //рез. функции(наш массив из db.json)
     //         data.forEach(({ img, altimg, title, descr, price }) => {
     //             new MenuCard(img, altimg, title, descr, price, '.menu .container', "menu__item").renderMenu();
     //         });
     //     });
 
-    // способ рендера без шаблонизации в class 
-    getItems('http://localhost:3000/menu')
-        .then(data => cresteCardData(data));
-
-    function cresteCardData(data) {
-        data.forEach(({ img, altimg, title, descr, price }) => {
-            const card = document.createElement('div');
-            card.classList.add("menu__item");
-            card.innerHTML = `
-                       <img src = ${img} alt= ${altimg}>
-                       <h3 class="menu__item-subtitle">Меню</h3>
-                       <div class="menu__item-descr">Меню "${title}" ${descr} </div>
-                       <div class="menu__item-divider"></div>
-                   <div class="menu__item-price">
-                       <div class="menu__item-cost">Цена:</div>
-                       <div class="menu__item-total"><span>${price}</span> грн/день</div>
-                  </div>   
-             `;
-
-            document.querySelector('.menu .container').append(card);
+    // axios подключил ссылкой в конец html файла
+    axios.get('http://localhost:3000/menu') //axios, function getItems тогда не нужна (тут все автоматически)
+        .then(data => {
+            data.data.forEach(({ img, altimg, title, descr, price }) => {
+                new MenuCard(img, altimg, title, descr, price, '.menu .container', "menu__item").renderMenu();
+            });
         });
-    }
+
+    // способ рендера без шаблонизации в class(class MenuCard можно удалить ) :
+
+    // getItems('http://localhost:3000/menu')
+    //     .then(data => createCardData(data));
+
+    // function createCardData(data) {
+    //     data.forEach(({ img, altimg, title, descr, price }) => {
+    //         const card = document.createElement('div');
+    //         card.classList.add("menu__item");
+    //         card.innerHTML = `
+    //                    <img src = ${img} alt= ${altimg}>
+    //                    <h3 class="menu__item-subtitle">Меню</h3>
+    //                    <div class="menu__item-descr">Меню "${title}" ${descr} </div>
+    //                    <div class="menu__item-divider"></div>
+    //                <div class="menu__item-price">
+    //                    <div class="menu__item-cost">Цена:</div>
+    //                    <div class="menu__item-total"><span>${price}</span> грн/день</div>
+    //               </div>   
+    //          `;
+
+    //         document.querySelector('.menu .container').append(card);
+    //     });
+    // }
 
 
+    // пример создание обьекта для конструктора class:
 
     // const fitness = new MenuCard(imgMenu[0], 'Фитнесс', textMenu[0], 229, ".menu__field .container");
     // new MenuCard(
@@ -403,9 +415,80 @@ window.addEventListener('DOMContentLoaded', (e) => {
     }
 
 
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res => console.log(res));
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(res => console.log(res));
+
+
+    // ******************* Slider
+
+    const parentCounter = document.querySelector('.offer__slider-counter'),
+        prev = parentCounter.querySelector('.offer__slider-prev'),
+        current = parentCounter.querySelector('#current'),
+        total = parentCounter.querySelector('#total'),
+        next = parentCounter.querySelector('.offer__slider-next'),
+        slider = document.querySelector('.offer__slide img');
+
+
+    const imgSlider = [
+        "img/slider/pepper.jpg",
+        "img/slider/food-12.jpg",
+        "img/slider/olive-oil.jpg",
+        "img/slider/paprika.jpg",
+        "img/slider/pepper.jpg",
+        "img/slider/food-12.jpg",
+        "img/slider/olive-oil.jpg",
+        "img/slider/paprika.jpg",
+        "img/slider/pepper.jpg",
+        "img/slider/food-12.jpg",
+        "img/slider/olive-oil.jpg",
+        "img/slider/paprika.jpg"
+    ]
+
+    let slideIndex = 0;
+
+
+    // function getZero(num) {      функция взята из таймера
+    //     if (num >= 0 && num < 10) {
+    //         return `0${num}`;
+    //     } else {
+    //         return num;
+    //     }
+    // }
+
+
+    function currentValue() {
+
+        current.innerHTML = getZero(slideIndex + 1);
+    }
+
+    function nextSlide() {
+        slideIndex++;
+        if (slideIndex >= imgSlider.length) {
+            slideIndex = 0;
+        }
+        slider.src = imgSlider[slideIndex];
+
+        currentValue();
+    }
+
+    function prevSlide() {
+        slideIndex--;
+        if (slideIndex < 0) {
+            slideIndex = imgSlider.length - 1;
+        }
+        slider.src = imgSlider[slideIndex];
+
+        currentValue();
+    }
+
+    currentValue();
+    total.innerHTML = getZero(imgSlider.length);
+    prev.addEventListener('click', prevSlide);
+    next.addEventListener('click', nextSlide);
+
+
+
 
 
 

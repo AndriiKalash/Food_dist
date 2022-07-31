@@ -542,6 +542,11 @@ window.addEventListener('DOMContentLoaded', (e) => {
         slide.style.width = width;
     });
 
+    function deleteNotDigits(str) {
+        return +str.replace(/\D/g, '')
+        // +width.slice(0, width.length - 2)
+    }
+
     let offset = 0;
     let sliderIndex = 1;
     const dots = [];
@@ -550,10 +555,10 @@ window.addEventListener('DOMContentLoaded', (e) => {
     slider.length < 10 ? current.innerHTML = `0${sliderIndex}` : sliderIndex;
 
     function tornNextSlide() {
-        if (offset == +width.slice(0, width.length - 2) * (slider.length - 1)) {
+        if (offset == deleteNotDigits(width) * (slider.length - 1)) {
             offset = 0;
         } else {
-            offset += +width.slice(0, width.length - 2);
+            offset += deleteNotDigits(width);
         }
 
         sliderIndex >= slider.length ? sliderIndex = 1 : sliderIndex++;
@@ -566,7 +571,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
         dots[sliderIndex - 1].style.opacity = 1;
     }
 
-    const slideAuto = setInterval(tornSlide, 4000);
+    const slideAuto = setInterval(tornNextSlide, 8000);
 
     next.addEventListener('click', () => {
 
@@ -578,9 +583,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
     prev.addEventListener('click', () => {
 
         if (offset == 0) {
-            offset = +width.slice(0, width.length - 2) * (slider.length - 1);
+            offset = deleteNotDigits(width) * (slider.length - 1);
         } else {
-            offset -= +width.slice(0, width.length - 2);
+            offset -= deleteNotDigits(width);
         }
 
         sliderIndex <= 1 ? sliderIndex = slider.length : sliderIndex--;
@@ -601,7 +606,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     wrapperSlider.style.position = 'relative';
 
     const indicators = document.createElement('ol');
-    slideIndicator.classList.add('carousel-indicators');
+    indicators.classList.add('carousel-indicators');
     indicators.style.cssText = `
         position: absolute;
         right: 0;
@@ -616,7 +621,6 @@ window.addEventListener('DOMContentLoaded', (e) => {
     `;
 
     wrapperSlider.append(indicators);
-
 
 
     for (let i = 0; i < slider.length; i++) {
@@ -655,19 +659,19 @@ window.addEventListener('DOMContentLoaded', (e) => {
             const slideTo = e.target.getAttribute('data-slide-to');
 
             sliderIndex = slideTo;
-            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            // offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            offset = deleteNotDigits(width) * (slideTo - 1);
 
-            slidesField.style.transform = `translateX(-${offset}px)`;
+            fieldSlider.style.transform = `translateX(-${offset}px)`;
 
             slider.length < 10 ? current.innerHTML = `0${sliderIndex}` : sliderIndex;
 
             dots.forEach(dot => dot.style.opacity = ".5");
             dots[sliderIndex - 1].style.opacity = 1;
+
+            clearTimeout(slideAuto);
         });
     });
-
-
-
 
 
 

@@ -1,7 +1,4 @@
 function slider({ wrapper, field, slide, counterCntainer, nextArrow, prevArrow, totalCounter, currentCounter }) {
-    // ******************* Slider 1 from arrey
-
-
 
     // ************** Slider 2 from html elements
 

@@ -9,14 +9,14 @@
 </head>
 
 <body>
-    <header class="header">
+    <header id="up" class="header">
         <div class="header__left-block">
             <div class="header__logo">
                 <img src="icons/logo.svg" alt="Логотип">
             </div>
             <nav class="header__links">
-                <a href="#" class="header__link">Доставка питания</a>
-                <a href="#" class="header__link">Второй пункт</a>
+                <a href="#day-menu" class="header__link">Доставка питания</a>
+                <a href="#calculator" class="header__link"> Потребность калорий</a>
             </nav>
         </div>
         <div class="header__right-block">
@@ -148,7 +148,7 @@
 
     <div class="divider"></div>
 
-    <div class="calculating">
+    <div id="calculator" class="calculating">
         <div class="container">
             <h2 class="title">Рассчитаем вашу потребность в калориях?
             </h2>
@@ -199,7 +199,7 @@
 
     <div class="divider"></div>
 
-    <div class="menu">
+    <div id="day-menu" class="menu">
         <h2 class="title">Наше меню на день</h2>
 
         <div class="menu__field">
@@ -326,6 +326,13 @@
             </div>
         </div>
     </div>
+    <a href="#up" class="pageup">
+        <svg class="up" viewBox="0 0 26 26" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M26 0H0V26H26V0ZM4.6593 17.7519L13.1233 10.33L21.5873 17.7519L22.9059 16.2481L13.7826 8.24813L13.1233 7.67L12.464 8.24813L3.3407 16.2481L4.6593 17.7519Z"
+                fill="black" />
+        </svg>
+    </a>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/bundle.js"></script>
 </body>

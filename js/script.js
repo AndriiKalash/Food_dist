@@ -6,6 +6,7 @@ import modal from './modules/modal';
 import cards from './modules/cards';
 import calculator from './modules/calculator';
 import { madalOpen } from "./modules/modal";
+import smoothScroll from './modules/smoothScroll';
 
 
 
@@ -16,6 +17,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     tabs('.tabheader__items', '.tabheader__item', '.tabcontent', 'tabheader__item_active');
     timer();
     slider({
+
         wrapper: '.offer__slider-wrapper',
         field: '.offer__slider-inner',
         slide: '.offer__slide',
@@ -30,6 +32,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     modal('[data-modal]', '.modal', modalTimerId);
     cards();
     calculator();
+    smoothScroll();
 
 
 

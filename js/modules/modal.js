@@ -1,18 +1,20 @@
+import calcScroll from '../services/calcScroll';
+const scroll = calcScroll();
 
 function modalClose(modalSelector) { //так как мы используем modal, созданный внутри другой функции , то мы его так же передадим как аргумент здесь
     const modal = document.querySelector(modalSelector);
-
-    // modal.classList.add('hiden');
+    modal.classList.add('hiden');
     modal.classList.remove('show');
     document.body.style.overflow = '';
+    document.body.style.marginRight = `0px`;
 }
 
 function madalOpen(modalSelector, modalTimerId) {
     const modal = document.querySelector(modalSelector);
-
     modal.classList.add('show');
-    // modal.classList.remove('hiden');
+    modal.classList.remove('hiden');
     document.body.style.overflow = 'hidden';
+    document.body.style.marginRight = `${scroll}px`;
 
     console.log(modalTimerId);
     if (modalTimerId) {
@@ -24,13 +26,7 @@ function madalOpen(modalSelector, modalTimerId) {
 function modal(openModalSelector, modalSelector, modalTimerId) {
     // ******************** click modal open
 
-    // const openModalBtn = document.querySelectorAll('[data-modal]'),
-    //     // closeModalBtn = document.querySelector('[data-close]'),
-    //     modal = document.querySelector('.modal');
-
-    //  передал селекторы как аргументы в функцию , и при вызове в script.js их задал:
     const openModalBtn = document.querySelectorAll(openModalSelector),
-        // closeModalBtn = document.querySelector('[data-close]'),
         modal = document.querySelector(modalSelector);
 
 

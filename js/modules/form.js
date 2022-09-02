@@ -42,14 +42,7 @@ function form(formSelector, modalTimerId) {
             // entries переделал formData в масив с масивами, а fromEntries создал обычный обьект и stringify перделал в json
             const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            // fetch('server.php', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(object),
 
-            // })
 
             postData('http://localhost:3000/requests', json) //JSON.stringify(object))  // передал запрос через ф-цыю postData:
                 .then(data => {
